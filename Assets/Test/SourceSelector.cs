@@ -16,6 +16,8 @@ public class SourceSelector : MonoBehaviour
     // three child objects only while it's opened.
     bool IsOpened => _dropdown.transform.childCount > 3;
 
+    void Awake() => NSDManager.Instance.Init();
+
     void Start() => _receiver = GetComponent<NdiReceiver>();
 
     void Update()
