@@ -31,6 +31,19 @@ static class RecvHelper
         if (type != Interop.FrameType.Video) return null;
         return (Interop.VideoFrame?)video;
     }
+
+        public static Interop.CaptureFrame TryCaptureFrame(Interop.Recv recv)
+        {
+            Interop.CaptureFrame captureFrame = new Interop.CaptureFrame();
+
+            captureFrame.frameType = recv.Capture(
+                out captureFrame.videoFrame,
+                out captureFrame.audioFrame,
+                IntPtr.Zero,
+                0);
+
+            return captureFrame;
+        }
 }
 
 }

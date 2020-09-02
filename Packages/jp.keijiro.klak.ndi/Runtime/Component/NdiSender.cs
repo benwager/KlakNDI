@@ -15,6 +15,11 @@ public sealed partial class NdiSender : MonoBehaviour
     MetadataQueue _metadataQueue = new MetadataQueue();
     System.Action<AsyncGPUReadbackRequest> _onReadback;
 
+    // Audio
+    int numSamples = 0;
+    int numChannels = 0;
+    float[] samples = new float[1];
+
     void PrepareInternalObjects()
     {
         if (_send == null)
@@ -226,6 +231,58 @@ public sealed partial class NdiSender : MonoBehaviour
     void OnDisable() => Restart(false);
 
     void OnDestroy() => Restart(false);
+        
+    void OnAudioFilterRead(float[] data, int channels)
+    {
+        if (data.Length == 0 || channels == 0) return;
+        
+        bool settingsChanged = false;
+        int tempSamples = data.Length / channels;
+                
+        if (tempSamples != numSamples)
+        {
+            settingsChanged = true;
+            numSamples = tempSamples;
+        }
+
+        if (channels != numChannels)
+        {
+            settingsChanged = true;
+            numChannels = channels;
+        }
+
+        if (settingsChanged)
+        {
+            System.Array.Resize<float>(ref samples, numSamples * numChannels);
+        }
+
+        for (int ch = 0; ch < numChannels; ch++)
+        {
+            for (int i = 0; i < numSamples; i++)
+            {
+                samples[numSamples * ch + i] = data[i * numChannels];
+            }
+        }
+        unsafe
+        {
+            fixed (float* p = samples)
+            {
+                var frame = new Interop.AudioFrame
+                {
+                    SampleRate = 48000,
+                    NoChannels = channels,
+                    NoSamples = numSamples,
+                    ChannelStride = numSamples * sizeof(float),
+                    Data = (System.IntPtr)p
+                };
+
+                if (_send != null && !_send.IsClosed)
+                {
+                    _send.SendAudio(frame);
+                }
+            }
+        }
+    }
 
     #endregion
 }
