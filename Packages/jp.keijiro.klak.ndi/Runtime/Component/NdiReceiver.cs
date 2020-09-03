@@ -201,11 +201,15 @@ public sealed partial class NdiReceiver : MonoBehaviour
                   (vf.Width, vf.Height,
                    Util.CheckAlpha(vf.FourCC), vf.Data);
 
-                // Copy the metadata idf any.
+                // Copy the metadata if any.
                 if (vf.Metadata != IntPtr.Zero)
                     metadata = Marshal.PtrToStringAnsi(vf.Metadata);
                 else
                     metadata = null;
+
+                // Store the videoframe resolution
+                if (resolution == null || resolution.x != vf.Width || resolution.y != vf.Height)
+                    resolution = new Vector2(vf.Width, vf.Height);
 
                 // Free the videoframe
                 videoFrameQueue.ForEach(v => _recv.FreeVideoFrame(v));

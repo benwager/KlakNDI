@@ -50,6 +50,8 @@ public sealed partial class NdiReceiver : MonoBehaviour
 
     public Interop.Recv internalRecvObject => _recv;
 
+    public Vector2 resolution { get; set; }
+
     #endregion
 
     #region Resources asset reference
