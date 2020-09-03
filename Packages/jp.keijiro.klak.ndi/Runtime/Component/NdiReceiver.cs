@@ -119,7 +119,7 @@ public sealed partial class NdiReceiver : MonoBehaviour
                     // Add buffer to queue for processing in audio thread
                     lock (threadlock)
                     {
-                        audioBufferQueue.Add(ConvertByteArrayToFloat(audBuffer));
+                        audioBufferQueue.Add(Util.ConvertByteArrayToFloat(audBuffer));
                     }
 
                     // We can free up the audio frame because this already been processed
@@ -131,18 +131,6 @@ public sealed partial class NdiReceiver : MonoBehaviour
         }
     }
 
-    internal float[] ConvertByteArrayToFloat(byte[] bytes)
-    {
-        if (bytes.Length % 4 != 0) throw new ArgumentException();
-
-        float[] floats = new float[bytes.Length / 4];
-        for (int i = 0; i < floats.Length; i++)
-        {
-            floats[i] = BitConverter.ToSingle(bytes, i * 4);
-        }
-
-        return floats;
-    }
     #endregion
 
     #region Component state controller
