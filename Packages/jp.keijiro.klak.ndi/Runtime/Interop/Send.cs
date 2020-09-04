@@ -38,6 +38,15 @@ public class Send : SafeHandleZeroOrMinusOneIsInvalid
     public void SendAudio(in AudioFrame data)
       => _SendAudio(this, data);
 
+    public void SendMetadata(in MetadataFrame data)
+      => _SendMetadata(this, data);
+
+    public FrameType Capture(out MetadataFrame data, uint timeout)
+      => _Capture(this, out data, timeout);
+
+    public void FreeMetadata(ref MetadataFrame data)
+      => _FreeMetadata(this, ref data);
+
     #endregion
 
     #region Unmanaged interface
@@ -67,7 +76,16 @@ public class Send : SafeHandleZeroOrMinusOneIsInvalid
     [DllImport(Config.DllName, EntryPoint = "NDIlib_send_send_audio_v2")]
     static extern void _SendAudio(Send send, in AudioFrame data);
 
+    [DllImport(Config.DllName, EntryPoint = "NDIlib_send_send_metadata")]
+    static extern void _SendMetadata(Send send, in MetadataFrame data);
+
+    [DllImport(Config.DllName, EntryPoint = "NDIlib_send_capture")]
+    static extern FrameType _Capture(Send send, out MetadataFrame data, uint timeout);
+
+    [DllImport(Config.DllName, EntryPoint = "NDIlib_send_free_metadata")]
+    static extern void _FreeMetadata(Send send, ref MetadataFrame data);
+
     #endregion
-}
+    }
 
 }

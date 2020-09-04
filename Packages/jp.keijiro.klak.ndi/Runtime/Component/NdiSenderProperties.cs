@@ -46,7 +46,12 @@ public sealed partial class NdiSender : MonoBehaviour
 
     #region Runtime property
 
-    public string metadata { get; set; }
+    public string sendVideoFrameMetadata { get; set; }
+
+    public string sendMetadataFrameData { get; set; }
+
+    public string recvMetadataFrameData { get; set; }
+
 
     public Interop.Send internalSendObject => _send;
 

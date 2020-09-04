@@ -60,11 +60,21 @@ public class Recv : SafeHandleZeroOrMinusOneIsInvalid
       (out VideoFrame video, out AudioFrame audio, IntPtr metadata, uint timeout)
       => _Capture(this, out video, out audio, metadata, timeout);
 
+    public FrameType Capture
+      (out VideoFrame video, out AudioFrame audio, out MetadataFrame metadata, uint timeout)
+      => _Capture(this, out video, out audio, out metadata, timeout);
+
     public void FreeVideoFrame(in VideoFrame frame)
-      => _FreeVideo(this, frame); 
-        
+      => _FreeVideo(this, frame);
+
     public void FreeAudioFrame(in AudioFrame frame)
       => _FreeAudio(this, frame);
+
+    public void FreeMetadataFrame(in MetadataFrame frame)
+      => _FreeMetadata(this, frame);
+
+    public void SendMetadata(in MetadataFrame frame)
+      => _SendMetadata(this, frame);
 
     public bool SetTally(in Tally tally)
       => _SetTally(this, tally);
@@ -90,11 +100,22 @@ public class Recv : SafeHandleZeroOrMinusOneIsInvalid
     static extern FrameType _Capture(Recv recv,
       out VideoFrame video, out AudioFrame audio, IntPtr metadata, uint timeout);
 
+    [DllImport(Config.DllName, EntryPoint = "NDIlib_recv_capture_v2")]
+    static extern FrameType _Capture(Recv recv,
+      out VideoFrame video, out AudioFrame audio, out MetadataFrame metadata, uint timeout);
+
     [DllImport(Config.DllName, EntryPoint = "NDIlib_recv_free_video_v2")]
     static extern void _FreeVideo(Recv recv, in VideoFrame data);
-        
+
     [DllImport(Config.DllName, EntryPoint = "NDIlib_recv_free_audio_v2")]
     static extern void _FreeAudio(Recv recv, in AudioFrame data);
+
+    [DllImport(Config.DllName, EntryPoint = "NDIlib_recv_free_metadata")]
+    static extern void _FreeMetadata(Recv recv, in MetadataFrame data);
+    
+    [DllImport(Config.DllName, EntryPoint = "NDIlib_recv_send_metadata")]
+    [return: MarshalAsAttribute(UnmanagedType.U1)]
+    static extern bool _SendMetadata(Recv recv, in MetadataFrame data);
 
     [DllImport(Config.DllName, EntryPoint = "NDIlib_recv_set_tally")]
     [return: MarshalAs(UnmanagedType.U1)]

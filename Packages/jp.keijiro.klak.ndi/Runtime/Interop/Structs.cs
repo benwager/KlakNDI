@@ -93,11 +93,20 @@ public struct AudioFrameInterleaved
 }
 
 [StructLayoutAttribute(LayoutKind.Sequential)]
+public struct MetadataFrame
+{
+    public int Length;
+    public long Timecode;
+    public IntPtr Data;
+}
+
+[StructLayoutAttribute(LayoutKind.Sequential)]
 public struct CaptureFrame
 {
     public FrameType frameType;
     public VideoFrame videoFrame;
     public AudioFrame audioFrame;
+    public MetadataFrame metadataFrame;
 }
 
 }

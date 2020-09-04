@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -91,11 +92,11 @@ public sealed partial class NdiSender : MonoBehaviour
             if (converted == null) continue;
 
             AsyncGPUReadback.Request(converted, _onReadback);
-            _metadataQueue.Enqueue(metadata);
+            _metadataQueue.Enqueue(sendVideoFrameMetadata);
         }
     }
 
-    #endregion
+        #endregion
 
     #region SRP camera capture callback
 
@@ -117,7 +118,7 @@ public sealed partial class NdiSender : MonoBehaviour
 
         // GPU readback request
         cb.RequestAsyncReadback(converted, _onReadback);
-        _metadataQueue.Enqueue(metadata);
+        _metadataQueue.Enqueue(sendVideoFrameMetadata);
     }
 
     #endregion
@@ -157,6 +158,17 @@ public sealed partial class NdiSender : MonoBehaviour
 
             // Send via NDI
             _send.SendVideoAsync(frame);
+
+            // Check if the receiver has returned any metadataFrames
+            Interop.MetadataFrame metadataFrame = new Interop.MetadataFrame();
+            while (_send.Capture(out metadataFrame, 0) == Interop.FrameType.Metadata)
+            {
+                // Store the latest 
+                recvMetadataFrameData = Util.Utf8ToString(metadataFrame.Data);
+
+                // Free the metadataFrame
+                _send.FreeMetadata(ref metadataFrame);
+            }
         }
     }
 
@@ -285,6 +297,23 @@ public sealed partial class NdiSender : MonoBehaviour
         }
     }
 
+    private void LateUpdate()
+    {
+        if (!string.IsNullOrEmpty(sendMetadataFrameData))
+        {
+            // Send some metadata
+            Interop.MetadataFrame metadataFrame = new Interop.MetadataFrame();
+            int length;
+            metadataFrame.Data = Util.StringToUtf8(sendMetadataFrameData, out length);
+            metadataFrame.Length = length;
+            if (_send != null && !_send.IsClosed)
+            {
+                _send.SendMetadata(metadataFrame);
+            }
+            Marshal.FreeHGlobal(metadataFrame.Data);
+            sendMetadataFrameData = null;
+        }
+    }
     #endregion
 }
 

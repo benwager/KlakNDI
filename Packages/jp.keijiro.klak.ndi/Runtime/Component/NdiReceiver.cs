@@ -13,6 +13,7 @@ public sealed partial class NdiReceiver : MonoBehaviour
 
     List<Interop.VideoFrame> videoFrameQueue = new List<Interop.VideoFrame>();
     List<float[]> audioBufferQueue = new List<float[]>();
+    List<string> metadataQueue = new List<string>();
 
     Thread _receiveThread;
     object threadlock = new object();
@@ -71,15 +72,32 @@ public sealed partial class NdiReceiver : MonoBehaviour
                     // We cannot free up the frame here because we need the data
                     // IntPtr address to be valid when processing on main thread.
                     // So we have to make sure to free the videoframe after processing
-                    lock (threadlock)
+                    lock (videoFrameQueue)
                     {
                         // We only need to keep a single frame at any point
                         // So we can free up any previous frames first
                         videoFrameQueue.ForEach(vf => _recv.FreeVideoFrame(vf));
                         videoFrameQueue.Clear();
                         videoFrameQueue.Add(captureFrame.videoFrame);
-                    }
-                    break;
+
+                            // Send some metadata back
+                            if (!string.IsNullOrEmpty(sendMetadataFrameData))
+                            {
+                                Interop.MetadataFrame metadataFrame = new Interop.MetadataFrame();
+                                int length;
+                                metadataFrame.Data = Util.StringToUtf8(sendMetadataFrameData, out length);
+                                metadataFrame.Length = length;
+                                if (_recv != null && !_recv.IsClosed)
+                                {
+                                    _recv.SendMetadata(metadataFrame);
+                                }
+                                Marshal.FreeHGlobal(metadataFrame.Data);
+                            }
+
+                        }
+
+
+                        break;
 
                 case Interop.FrameType.Audio:
                     
@@ -117,7 +135,7 @@ public sealed partial class NdiReceiver : MonoBehaviour
                     handle.Free();
 
                     // Add buffer to queue for processing in audio thread
-                    lock (threadlock)
+                    lock (audioBufferQueue)
                     {
                         audioBufferQueue.Add(Util.ConvertByteArrayToFloat(audBuffer));
                     }
@@ -127,8 +145,22 @@ public sealed partial class NdiReceiver : MonoBehaviour
                     _recv.FreeAudioFrame(captureFrame.audioFrame);
 
                     break;
+
+                case Interop.FrameType.Metadata:
+
+                    // UTF-8 strings must be converted for use - length includes the terminating zero
+                    string metadata = Util.Utf8ToString(captureFrame.metadataFrame.Data, (uint)captureFrame.metadataFrame.Length-1);
+
+                    lock(metadataQueue)
+                    {
+                        metadataQueue.Add(metadata);
+                    }
+
+                    // free frames that were received
+                    _recv.FreeMetadataFrame(captureFrame.metadataFrame);
+                    break;
+                }
             }
-        }
     }
 
     #endregion
@@ -153,7 +185,7 @@ public sealed partial class NdiReceiver : MonoBehaviour
 
     private void OnAudioFilterRead(float[] data, int channels)
     {
-        lock (threadlock)
+        lock (audioBufferQueue)
         {
             if (audioBufferQueue.Count > 0)
             {
@@ -174,8 +206,25 @@ public sealed partial class NdiReceiver : MonoBehaviour
         if (_recv == null) return;
     
         RenderTexture rt = null;
-        lock (threadlock)
-        {
+            // Handle MetadataFrames
+            string metadataFrameData = null;
+
+            lock (metadataQueue)
+            {
+                if (metadataQueue.Count > 0)
+                {
+                    metadataFrameData = metadataQueue[0];
+                    metadataQueue.RemoveAt(0);
+                }
+            }
+            // Do something with your metadataFrameData here
+            if (!string.IsNullOrEmpty(metadataFrameData))
+            { 
+                Debug.Log(metadataFrameData);
+            }
+
+            lock(videoFrameQueue)
+            { 
             // Handle VideoFrames                
             if (videoFrameQueue.Count > 0)
             {
@@ -191,9 +240,9 @@ public sealed partial class NdiReceiver : MonoBehaviour
 
                 // Copy the metadata if any.
                 if (vf.Metadata != IntPtr.Zero)
-                    metadata = Marshal.PtrToStringAnsi(vf.Metadata);
+                    recvVideoFrameMetadata = Marshal.PtrToStringAnsi(vf.Metadata);
                 else
-                    metadata = null;
+                    recvVideoFrameMetadata = null;
 
                 // Store the videoframe resolution
                 if (resolution == null || resolution.x != vf.Width || resolution.y != vf.Height)
