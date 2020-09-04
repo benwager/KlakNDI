@@ -11,5 +11,5 @@ class MetadataMonitor : MonoBehaviour
       => _receiver = GetComponent<NdiReceiver>();
 
     void Update()
-      => _output.text = _receiver.metadata;
+      => _output.text = _receiver.recvVideoFrameMetadata;
 }

@@ -22,8 +22,8 @@ class MetadataAdapter : MonoBehaviour
             text += $" text=\"{_extraText}\"";
 
         if (text.Length == 0)
-            _sender.metadata = null;
+            _sender.sendVideoFrameMetadata = null;
         else
-            _sender.metadata = $"<frame {text}/>";
+            _sender.sendVideoFrameMetadata = $"<frame {text}/>";
     }
 }
