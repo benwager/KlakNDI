@@ -12,9 +12,9 @@ public sealed partial class NdiReceiver : MonoBehaviour
     #region Internal objects
 
     List<Interop.VideoFrame> videoFrameQueue = new List<Interop.VideoFrame>();
-    List<float[]> audioBufferQueue = new List<float[]>();
+    List<float> audioBuffer = new List<float>();
     List<string> metadataQueue = new List<string>();
-
+    
     Thread _receiveThread;
     object threadlock = new object();
     bool _exitThread = false;
@@ -134,10 +134,10 @@ public sealed partial class NdiReceiver : MonoBehaviour
                     // that IntPtr will no longer be valid.
                     handle.Free();
 
-                    // Add buffer to queue for processing in audio thread
-                    lock (audioBufferQueue)
+                    // Add to audio buffer for processing in audio thread
+                    lock (audioBuffer)
                     {
-                        audioBufferQueue.Add(Util.ConvertByteArrayToFloat(audBuffer));
+                        audioBuffer.AddRange(Util.ConvertByteArrayToFloat(audBuffer));
                     }
 
                     // We can free up the audio frame because this already been processed
@@ -185,15 +185,18 @@ public sealed partial class NdiReceiver : MonoBehaviour
 
     private void OnAudioFilterRead(float[] data, int channels)
     {
-        lock (audioBufferQueue)
+        lock (audioBuffer)
         {
-            if (audioBufferQueue.Count > 0)
+            if (audioBuffer.Count > 0)
             {
-                for (int i = 0; i < audioBufferQueue[0].Length; i++)
+                for (int i = 0; i < data.Length; i++)
                 {
-                    data[i] = audioBufferQueue[0][i];
+                    if (audioBuffer.Count > i)
+                    {
+                        data[i] = audioBuffer[i];
+                    }
                 }
-                audioBufferQueue.RemoveAt(0);
+                audioBuffer.RemoveRange(0, data.Length);
             }
         }
     }
