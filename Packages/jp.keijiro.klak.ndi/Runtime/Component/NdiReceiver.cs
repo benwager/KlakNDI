@@ -198,7 +198,7 @@ public sealed partial class NdiReceiver : MonoBehaviour
         }
     }
 
-    void LateUpdate()
+    void Update()
     {
         PrepareInternalObjects();
 
