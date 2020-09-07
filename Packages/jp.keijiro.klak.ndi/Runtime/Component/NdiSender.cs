@@ -1,5 +1,5 @@
+using System;
 using System.Runtime.InteropServices;
-using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -21,8 +21,27 @@ public sealed partial class NdiSender : MonoBehaviour
     int numChannels = 0;
     float[] samples = new float[1];
 
+    Interop.VideoFrame emptyVideoFrame;
+    GCHandle bufferHandle1;
+    GCHandle bufferHandle2;
+    byte[] videoFrameBuffer1 = null;
+    byte[] videoFrameBuffer2 = null;
+    int ping = 0;
+
     void PrepareInternalObjects()
     {
+        emptyVideoFrame = new Interop.VideoFrame
+        {
+            Width = 0,
+            Height = 0,
+            LineStride = 0,
+            FourCC = _enableAlpha ?
+              Interop.FourCC.UYVA : Interop.FourCC.UYVY,
+            FrameFormat = Interop.FrameFormat.Progressive,
+            Data = IntPtr.Zero,
+            Metadata = IntPtr.Zero
+        };
+
         if (_send == null)
             _send = _captureMethod == CaptureMethod.GameView ?
               SharedInstance.GameViewSend : Interop.Send.Create(_ndiName);
@@ -142,7 +161,49 @@ public sealed partial class NdiSender : MonoBehaviour
 
             // Readback data retrieval
             var data = request.GetData<byte>();
-            var pdata = NativeArrayUnsafeUtility.GetUnsafeReadOnlyPtr(data);
+        
+            // NDI SDK Documentation p.21 re: send_video_v2_async
+            //
+            // If you call this and then free the pointer, your application will
+            // most likely crash in an NDI thread because the SDK is still using the video frame
+            // that was passed to the call.
+            // One possible solution is to ping pong between two buffers on 
+            // alternating calls to NDIlib_send_send_video_v2_async
+
+            if (data.Length <= 0) return;
+
+            if (videoFrameBuffer1 == null || videoFrameBuffer1.Length <=0)
+            {
+                videoFrameBuffer1 = new byte[data.Length];
+                bufferHandle1 = GCHandle.Alloc(videoFrameBuffer1, GCHandleType.Pinned);
+            }
+
+            if (videoFrameBuffer2 == null || videoFrameBuffer2.Length <= 0)
+            {
+                videoFrameBuffer2 = new byte[data.Length];
+                bufferHandle2 = GCHandle.Alloc(videoFrameBuffer2, GCHandleType.Pinned);
+            }
+
+            // Handle frame size change
+            if (videoFrameBuffer1.Length != data.Length)
+            {
+                _send.SendVideoAsync(emptyVideoFrame);
+                bufferHandle1.Free();
+                videoFrameBuffer1 = new byte[data.Length];
+                bufferHandle1 = GCHandle.Alloc(videoFrameBuffer1, GCHandleType.Pinned);
+            }
+            if (videoFrameBuffer2.Length != data.Length)
+            {
+                _send.SendVideoAsync(emptyVideoFrame);
+                bufferHandle2.Free();
+                videoFrameBuffer2 = new byte[data.Length];
+                bufferHandle2 = GCHandle.Alloc(videoFrameBuffer2, GCHandleType.Pinned);
+            }
+
+            // Ping pong handles
+            var pdata = ping == 0 ? bufferHandle1.AddrOfPinnedObject() : bufferHandle2.AddrOfPinnedObject();
+            data.CopyTo(ping == 0 ? videoFrameBuffer1 : videoFrameBuffer2);
+            ping = ping == 0 ? 1 : 0;
 
             // Data size verification
             if (data.Length / sizeof(uint) !=
@@ -228,6 +289,19 @@ public sealed partial class NdiSender : MonoBehaviour
     // Reset the component state and dispose the NDI send object.
     internal void Restart(bool willBeActivate)
     {
+        if (_send != null && !_send.IsInvalid && !_send.IsClosed)
+        {
+            _send.SendVideoAsync(emptyVideoFrame);
+        }
+        if (bufferHandle1 != null && bufferHandle1.IsAllocated)
+        {
+            bufferHandle1.Free();
+        }
+        if (bufferHandle2 != null && bufferHandle2.IsAllocated)
+        {
+            bufferHandle2.Free();
+        }
+
         ResetState(willBeActivate);
         ReleaseInternalObjects();
     }
