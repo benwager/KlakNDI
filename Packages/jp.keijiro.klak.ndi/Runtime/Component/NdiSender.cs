@@ -302,6 +302,8 @@ public sealed partial class NdiSender : MonoBehaviour
             bufferHandle2.Free();
         }
 
+        videoFrameBuffer1 = videoFrameBuffer2 = null;
+
         ResetState(willBeActivate);
         ReleaseInternalObjects();
     }
