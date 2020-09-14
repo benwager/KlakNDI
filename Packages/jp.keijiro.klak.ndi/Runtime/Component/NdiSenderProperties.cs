@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Klak.Ndi {
 
@@ -44,14 +45,22 @@ public sealed partial class NdiSender : MonoBehaviour
 
     #endregion
 
+    #region metadata events
+
+    [SerializeField] UnityEvent<string> _onMetaDataReceived = null;
+
+    public UnityEvent<string> onMetaDataReceived
+    { get => _onMetaDataReceived;
+      set => _onMetaDataReceived = value;
+    }
+
+    #endregion
+
     #region Runtime property
 
     public string sendVideoFrameMetadata { get; set; }
 
     public string sendMetadataFrameData { get; set; }
-
-    public string recvMetadataFrameData { get; set; }
-
 
     public Interop.Send internalSendObject => _send;
 

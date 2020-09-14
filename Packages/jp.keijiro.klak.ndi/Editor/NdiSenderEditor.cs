@@ -11,7 +11,8 @@ sealed class NdiSenderEditor : UnityEditor.Editor
     SerializedProperty _enableAlpha;
     SerializedProperty _captureMethod;
     SerializedProperty _sourceCamera;
-    SerializedProperty _sourceTexture;
+    SerializedProperty _sourceTexture; 
+    SerializedProperty _onMetadataReceived;
 
     static class Styles
     {
@@ -26,6 +27,7 @@ sealed class NdiSenderEditor : UnityEditor.Editor
         _captureMethod = finder["_captureMethod"];
         _sourceCamera = finder["_sourceCamera"];
         _sourceTexture = finder["_sourceTexture"];
+        _onMetadataReceived = finder["_onMetaDataReceived"];
     }
 
     public override void OnInspectorGUI()
@@ -63,6 +65,8 @@ sealed class NdiSenderEditor : UnityEditor.Editor
             EditorGUILayout.PropertyField(_sourceTexture);
 
         EditorGUI.indentLevel--;
+
+        EditorGUILayout.PropertyField(_onMetadataReceived, true);
 
         serializedObject.ApplyModifiedProperties();
 
