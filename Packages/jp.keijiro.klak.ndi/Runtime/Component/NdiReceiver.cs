@@ -209,7 +209,8 @@ public sealed partial class NdiReceiver : MonoBehaviour
                         data[i] = audioBuffer[i];
                     }
                 }
-                audioBuffer.RemoveRange(0, data.Length);
+                int buffCount = audioBuffer.Count >= data.Length ? data.Length : audioBuffer.Count;
+                audioBuffer.RemoveRange(0, buffCount);
             }
         }
     }
