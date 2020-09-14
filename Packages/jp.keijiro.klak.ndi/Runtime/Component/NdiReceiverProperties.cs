@@ -42,6 +42,16 @@ public sealed partial class NdiReceiver : MonoBehaviour
 
     #endregion
 
+    #region metadata
+
+    [SerializeField] public string _connectionAcknowledgement;
+    
+    public string connectionAcknowledgement 
+      { get => _connectionAcknowledgement; 
+        set => _connectionAcknowledgement = value; }
+
+    #endregion
+
     #region Runtime property
 
     public RenderTexture texture => _converter?.LastDecoderOutput;

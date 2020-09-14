@@ -25,7 +25,16 @@ public sealed partial class NdiReceiver : MonoBehaviour
 
     void PrepareInternalObjects()
     {
-        if (_recv == null) _recv = RecvHelper.TryCreateRecv(_ndiName);
+        if (_recv == null)
+        {
+            _recv = RecvHelper.TryCreateRecv(_ndiName);
+            if (_recv != null)
+            {
+                // Send Connection acknowledgment
+                SendMetadataFrame(connectionAcknowledgement);
+            }
+        }
+
         if (_converter == null) _converter = new FormatConverter(_resources);
         if (_override == null) _override = new MaterialPropertyBlock();
     }
@@ -80,24 +89,12 @@ public sealed partial class NdiReceiver : MonoBehaviour
                         videoFrameQueue.Clear();
                         videoFrameQueue.Add(captureFrame.videoFrame);
 
-                            // Send some metadata back
-                            if (!string.IsNullOrEmpty(sendMetadataFrameData))
-                            {
-                                Interop.MetadataFrame metadataFrame = new Interop.MetadataFrame();
-                                int length;
-                                metadataFrame.Data = Util.StringToUtf8(sendMetadataFrameData, out length);
-                                metadataFrame.Length = length;
-                                if (_recv != null && !_recv.IsClosed)
-                                {
-                                    _recv.SendMetadata(metadataFrame);
-                                }
-                                Marshal.FreeHGlobal(metadataFrame.Data);
-                            }
+                    }                        
+                    
+                    // Send some metadata back
+                    SendMetadataFrame(sendMetadataFrameData);
 
-                        }
-
-
-                        break;
+                    break;
 
                 case Interop.FrameType.Audio:
                     
@@ -161,6 +158,22 @@ public sealed partial class NdiReceiver : MonoBehaviour
                     break;
                 }
             }
+    }
+
+    void SendMetadataFrame(string data)
+    {
+        if (!string.IsNullOrEmpty(data))
+        {
+            Interop.MetadataFrame metadataFrame = new Interop.MetadataFrame();
+            int length;
+            metadataFrame.Data = Util.StringToUtf8(data, out length);
+            metadataFrame.Length = length;
+            if (_recv != null && !_recv.IsClosed)
+            {
+                _recv.SendMetadata(metadataFrame);
+            }
+            Marshal.FreeHGlobal(metadataFrame.Data);
+        }
     }
 
     #endregion
