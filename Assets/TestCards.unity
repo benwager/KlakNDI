@@ -2015,7 +2015,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _ndiName: Shutter
   _enableAlpha: 1
-  _captureMethod: 2
+  _captureMethod: 1
   _sourceCamera: {fileID: 1895680588}
   _sourceTexture: {fileID: 10300, guid: 0000000000000000f000000000000000, type: 0}
   _onMetaDataReceived:
@@ -2029,13 +2029,11 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1717205394}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0ce37fdea4f22e311bbe833e0863168c, type: 3}
+  m_Script: {fileID: 11500000, guid: c78f00d55ee6ce841b9376d8e6a9f666, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _frameNumber: 1
-  _extraText: Test Stream
 --- !u!1 &1818134377
 GameObject:
   m_ObjectHideFlags: 0
