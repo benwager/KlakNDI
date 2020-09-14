@@ -12,6 +12,9 @@ sealed class NdiSenderEditor : UnityEditor.Editor
     SerializedProperty _captureMethod;
     SerializedProperty _sourceCamera;
     SerializedProperty _sourceTexture; 
+    SerializedProperty _enableVideoFrames;
+    SerializedProperty _enableAudioFrames;
+    SerializedProperty _enableMetadataFrames;
     SerializedProperty _onMetadataReceived;
 
     static class Styles
@@ -27,6 +30,9 @@ sealed class NdiSenderEditor : UnityEditor.Editor
         _captureMethod = finder["_captureMethod"];
         _sourceCamera = finder["_sourceCamera"];
         _sourceTexture = finder["_sourceTexture"];
+        _enableVideoFrames = finder["_enableVideoFrames"];
+        _enableAudioFrames = finder["_enableAudioFrames"];
+        _enableMetadataFrames = finder["_enableMetadataFrames"];
         _onMetadataReceived = finder["_onMetaDataReceived"];
     }
 
@@ -66,6 +72,10 @@ sealed class NdiSenderEditor : UnityEditor.Editor
 
         EditorGUI.indentLevel--;
 
+        EditorGUILayout.PropertyField(_enableVideoFrames);
+        EditorGUILayout.PropertyField(_enableAudioFrames);
+        EditorGUILayout.PropertyField(_enableMetadataFrames);
+      
         EditorGUILayout.PropertyField(_onMetadataReceived, true);
 
         serializedObject.ApplyModifiedProperties();

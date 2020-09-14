@@ -19,13 +19,35 @@ public sealed partial class NdiSender : MonoBehaviour
 
     public bool enableAlpha
       { get => _enableAlpha;
-        set => _enableAlpha = value; }
+        set => _enableAlpha = value;
+        }
+
+    [SerializeField] bool _enableVideoFrames = true;
+
+    public bool enableVideoFrames
+    { get => _enableVideoFrames;
+      set => _enableVideoFrames = value;
+    }
+
+    [SerializeField] bool _enableAudioFrames = true;
+
+    public bool enableAudioFrames
+    { get => _enableAudioFrames;
+      set => _enableAudioFrames = value;
+    }
+
+    [SerializeField] bool _enableMetadataFrames = true;
+
+    public bool enableMetadataFrames
+    { get => _enableMetadataFrames;
+      set => _enableMetadataFrames = value;
+    }
 
     #endregion
 
     #region Capture target settings
 
-    [SerializeField] CaptureMethod _captureMethod = CaptureMethod.GameView;
+        [SerializeField] CaptureMethod _captureMethod = CaptureMethod.GameView;
 
     public CaptureMethod captureMethod
       { get => _captureMethod;

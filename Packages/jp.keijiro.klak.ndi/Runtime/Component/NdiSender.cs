@@ -153,7 +153,7 @@ public sealed partial class NdiSender : MonoBehaviour
             if (request.hasError) return;
 
             // Ignore it if the NDI object has been already disposed.
-            if (_send == null || _send.IsInvalid || _send.IsClosed) return;
+            if (_send == null || _send.IsInvalid || _send.IsClosed || !_enableVideoFrames) return;
 
             // Pixel format (depending on alpha mode)
             var fourcc = _enableAlpha ?
@@ -310,9 +310,9 @@ public sealed partial class NdiSender : MonoBehaviour
 
     void OnDestroy() => Restart(false);
         
-    void OnAudioFilterRead(float[] data, int channels)
+    public void SendAudio(float[] data, int channels)
     {
-        if (data.Length == 0 || channels == 0) return;
+        if (data.Length == 0 || channels == 0 || !_enableAudioFrames) return;
         
         bool settingsChanged = false;
         int tempSamples = data.Length / channels;
@@ -378,7 +378,7 @@ public sealed partial class NdiSender : MonoBehaviour
             }
         }
 
-        if (!string.IsNullOrEmpty(sendMetadataFrameData))
+        if (!string.IsNullOrEmpty(sendMetadataFrameData) && _enableMetadataFrames)
         {
             // Send some metadata
             Interop.MetadataFrame metadataFrame = new Interop.MetadataFrame();
