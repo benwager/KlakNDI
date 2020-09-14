@@ -219,17 +219,6 @@ public sealed partial class NdiSender : MonoBehaviour
 
             // Send via NDI
             _send.SendVideoAsync(frame);
-
-            // Check if the receiver has returned any metadataFrames
-            Interop.MetadataFrame metadataFrame = new Interop.MetadataFrame();
-            while (_send.Capture(out metadataFrame, 0) == Interop.FrameType.Metadata)
-            {
-                // Store the latest 
-                recvMetadataFrameData = Util.Utf8ToString(metadataFrame.Data);
-
-                // Free the metadataFrame
-                _send.FreeMetadata(ref metadataFrame);
-            }
         }
     }
 
@@ -373,6 +362,20 @@ public sealed partial class NdiSender : MonoBehaviour
 
     private void LateUpdate()
     {
+        // Check if the receiver has returned any metadataFrames
+        if (_send != null && !_send.IsClosed)
+        {
+            Interop.MetadataFrame recvMetadataFrame = new Interop.MetadataFrame();
+            while (_send.Capture(out recvMetadataFrame, 0) == Interop.FrameType.Metadata)
+            {
+                // Dispatch UnityEvent
+                onMetaDataReceived?.Invoke(Util.Utf8ToString(recvMetadataFrame.Data));
+
+                // Free the metadataFrame
+                _send.FreeMetadata(ref recvMetadataFrame);
+            }
+        }
+
         if (!string.IsNullOrEmpty(sendMetadataFrameData))
         {
             // Send some metadata
