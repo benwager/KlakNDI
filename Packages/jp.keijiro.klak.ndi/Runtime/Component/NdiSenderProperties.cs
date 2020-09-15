@@ -81,6 +81,8 @@ public sealed partial class NdiSender : MonoBehaviour
     #region Runtime property
 
     public string sendVideoFrameMetadata { get; set; }
+       
+    public string sendAudioFrameMetadata { get; set; }
 
     public string sendMetadataFrameData { get; set; }
 

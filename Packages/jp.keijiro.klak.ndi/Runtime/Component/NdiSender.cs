@@ -2,6 +2,7 @@ using System;
 using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.Rendering;
+using static Klak.Ndi.MetadataQueue;
 
 namespace Klak.Ndi {
 
@@ -353,6 +354,11 @@ public sealed partial class NdiSender : MonoBehaviour
                     ChannelStride = numSamples * sizeof(float),
                     Data = (System.IntPtr)p
                 };
+
+                if(!string.IsNullOrEmpty(sendAudioFrameMetadata))
+                {
+                    frame.Metadata = new DataEntry(sendAudioFrameMetadata);
+                }
 
                 if (_send != null && !_send.IsClosed)
                 {

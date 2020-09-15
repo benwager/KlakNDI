@@ -13,6 +13,9 @@ sealed class NdiReceiverEditor : UnityEditor.Editor
     SerializedProperty _targetMaterialProperty;
     SerializedProperty _targetAudioSource;
     SerializedProperty _connectionAcknowledgement;
+    SerializedProperty _onVideoMetaDataReceived; 
+    SerializedProperty _onAudioMetaDataReceived;
+    SerializedProperty _onMetaDataReceived;
 
     static class Styles
     {
@@ -66,6 +69,9 @@ sealed class NdiReceiverEditor : UnityEditor.Editor
         _targetMaterialProperty = finder["_targetMaterialProperty"]; 
         _targetAudioSource = finder["_targetAudioSource"];
         _connectionAcknowledgement = finder["_connectionAcknowledgement"];
+        _onVideoMetaDataReceived = finder["_onVideoMetaDataReceived"];
+        _onAudioMetaDataReceived = finder["_onAudioMetaDataReceived"];
+        _onMetaDataReceived = finder["_onMetaDataReceived"];
     }
 
     public override void OnInspectorGUI()
@@ -109,7 +115,11 @@ sealed class NdiReceiverEditor : UnityEditor.Editor
 
         EditorGUILayout.PropertyField(_targetAudioSource);
 
-        EditorGUILayout.PropertyField(_connectionAcknowledgement);
+        EditorGUILayout.PropertyField(_connectionAcknowledgement); 
+            
+        EditorGUILayout.PropertyField(_onVideoMetaDataReceived, true);
+        EditorGUILayout.PropertyField(_onAudioMetaDataReceived, true);
+        EditorGUILayout.PropertyField(_onMetaDataReceived, true);
 
         serializedObject.ApplyModifiedProperties();
 

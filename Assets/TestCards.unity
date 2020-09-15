@@ -298,6 +298,8 @@ GameObject:
   m_Component:
   - component: {fileID: 150476826}
   - component: {fileID: 150476825}
+  - component: {fileID: 150476827}
+  - component: {fileID: 150476828}
   m_Layer: 0
   m_Name: Sender (Game View)
   m_TagString: Untagged
@@ -319,12 +321,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _ndiName: Game View
   _enableAlpha: 1
+  _enableVideoFrames: 1
+  _enableAudioFrames: 1
+  _enableMetadataFrames: 1
   _captureMethod: 0
   _sourceCamera: {fileID: 0}
   _sourceTexture: {fileID: 0}
   _onMetaDataReceived:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 150476827}
+        m_TargetAssemblyTypeName: MetadataLogger, Assembly-CSharp
+        m_MethodName: Log
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   _resources: {fileID: 11400000, guid: 69304b86950074db7ba8caba75214004, type: 2}
 --- !u!4 &150476826
 Transform:
@@ -340,6 +357,33 @@ Transform:
   m_Father: {fileID: 1293850764}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &150476827
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 150476824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2642f1bdb86549a409f8832b7c31f6e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &150476828
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 150476824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71f93f534474cd84d9f357554b45754f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  videoFrameMetaData: <VideoFrame key="value" />
+  audioFrameMetaData: <AudioFrame key="value" />
+  metadataFrameData: <MetadataFrame key="value" />
 --- !u!1 &219048938
 GameObject:
   m_ObjectHideFlags: 0
@@ -829,7 +873,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &610102627
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1231,9 +1275,9 @@ GameObject:
   - component: {fileID: 945102835}
   - component: {fileID: 945102836}
   - component: {fileID: 945102837}
-  - component: {fileID: 945102839}
   - component: {fileID: 945102838}
   - component: {fileID: 945102840}
+  - component: {fileID: 945102839}
   m_Layer: 0
   m_Name: NDI Receiver
   m_TagString: Untagged
@@ -1273,6 +1317,51 @@ MonoBehaviour:
   _targetMaterialProperty: _BaseMap
   _targetAudioSource: {fileID: 945102840}
   _connectionAcknowledgement: <conn_ack num_walls="2" />
+  _onVideoMetaDataReceived:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 945102839}
+        m_TargetAssemblyTypeName: MetadataLogger, Assembly-CSharp
+        m_MethodName: Log
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _onAudioMetaDataReceived:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 945102839}
+        m_TargetAssemblyTypeName: MetadataLogger, Assembly-CSharp
+        m_MethodName: Log
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _onMetaDataReceived:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 945102839}
+        m_TargetAssemblyTypeName: MetadataLogger, Assembly-CSharp
+        m_MethodName: Log
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   _resources: {fileID: 11400000, guid: 69304b86950074db7ba8caba75214004, type: 2}
 --- !u!114 &945102837
 MonoBehaviour:
@@ -1309,12 +1398,11 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 945102834}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 406f789c73242dbfd9a1e911a08851bc, type: 3}
+  m_Script: {fileID: 11500000, guid: 2642f1bdb86549a409f8832b7c31f6e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _output: {fileID: 610102627}
 --- !u!82 &945102840
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1980,6 +2068,7 @@ GameObject:
   - component: {fileID: 1717205395}
   - component: {fileID: 1717205396}
   - component: {fileID: 1717205397}
+  - component: {fileID: 1717205398}
   m_Layer: 0
   m_Name: Sender (Shutter)
   m_TagString: Untagged
@@ -2015,12 +2104,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _ndiName: Shutter
   _enableAlpha: 1
+  _enableVideoFrames: 1
+  _enableAudioFrames: 1
+  _enableMetadataFrames: 1
   _captureMethod: 1
   _sourceCamera: {fileID: 1895680588}
   _sourceTexture: {fileID: 10300, guid: 0000000000000000f000000000000000, type: 0}
   _onMetaDataReceived:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1717205398}
+        m_TargetAssemblyTypeName: MetadataLogger, Assembly-CSharp
+        m_MethodName: Log
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   _resources: {fileID: 11400000, guid: 69304b86950074db7ba8caba75214004, type: 2}
 --- !u!114 &1717205397
 MonoBehaviour:
@@ -2032,6 +2136,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c78f00d55ee6ce841b9376d8e6a9f666, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1717205398
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1717205394}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2642f1bdb86549a409f8832b7c31f6e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1818134377

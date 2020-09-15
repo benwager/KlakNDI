@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Klak.Ndi {
 
@@ -47,16 +48,34 @@ public sealed partial class NdiReceiver : MonoBehaviour
     [SerializeField] public string _connectionAcknowledgement;
     
     public string connectionAcknowledgement 
-      { get => _connectionAcknowledgement; 
-        set => _connectionAcknowledgement = value; }
+    { get => _connectionAcknowledgement; 
+      set => _connectionAcknowledgement = value; }
 
+    [SerializeField] UnityEvent<string> _onVideoMetaDataReceived = null;
+
+    public UnityEvent<string> onVideoMetaDataReceived
+    { get => _onVideoMetaDataReceived;
+      set => _onVideoMetaDataReceived = value;
+    }
+       
+    [SerializeField] UnityEvent<string> _onAudioMetaDataReceived = null;
+
+    public UnityEvent<string> onAudioMetaDataReceived
+    { get => _onAudioMetaDataReceived;
+      set => _onAudioMetaDataReceived = value;
+    }
+    
+    [SerializeField] UnityEvent<string> _onMetaDataReceived = null;
+
+    public UnityEvent<string> onMetaDataReceived
+    { get => _onMetaDataReceived;
+      set => _onMetaDataReceived = value;
+    }
     #endregion
 
     #region Runtime property
 
     public RenderTexture texture => _converter?.LastDecoderOutput;
-
-    public string recvVideoFrameMetadata { get; set; }
 
     public string sendMetadataFrameData { get; set; }
 
