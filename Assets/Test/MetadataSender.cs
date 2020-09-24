@@ -26,4 +26,19 @@ public class MetadataSender : MonoBehaviour
         sender.sendAudioFrameMetadata = audioFrameMetaData;
         sender.sendMetadataFrameData = metadataFrameData;
     }
+
+    public void ClearVideFrameMetadata()
+    {
+        videoFrameMetaData = null;
+    }
+
+    public void ClearAudioFrameMetadata()
+    {
+        audioFrameMetaData = null;
+    }
+
+    public void ClearMetadataFrameMetadata()
+    {
+        metadataFrameData = null;
+    }
 }
