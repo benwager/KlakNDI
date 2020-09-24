@@ -47,7 +47,7 @@ public sealed partial class NdiSender : MonoBehaviour
 
     #region Capture target settings
 
-        [SerializeField] CaptureMethod _captureMethod = CaptureMethod.GameView;
+    [SerializeField] CaptureMethod _captureMethod = CaptureMethod.GameView;
 
     public CaptureMethod captureMethod
       { get => _captureMethod;
@@ -74,6 +74,29 @@ public sealed partial class NdiSender : MonoBehaviour
     public UnityEvent<string> onMetaDataReceived
     { get => _onMetaDataReceived;
       set => _onMetaDataReceived = value;
+
+    [SerializeField] UnityEvent _onVideoMetadataSent = null;
+
+    public UnityEvent onVideoMetadataSent
+    {
+        get => _onVideoMetadataSent;
+        set => _onVideoMetadataSent = value;
+    }
+
+    [SerializeField] UnityEvent _onAudioMetadataSent = null;
+
+    public UnityEvent onAudioMetadataSent
+    {
+        get => _onAudioMetadataSent;
+        set => _onAudioMetadataSent = value;
+    }
+
+    [SerializeField] UnityEvent _onMetadataSent = null;
+
+    public UnityEvent onMetadataSent
+    { 
+        get => _onMetadataSent;
+        set => _onMetadataSent = value;
     }
 
     #endregion

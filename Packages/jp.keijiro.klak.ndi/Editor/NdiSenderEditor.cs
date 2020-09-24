@@ -15,7 +15,10 @@ sealed class NdiSenderEditor : UnityEditor.Editor
     SerializedProperty _enableVideoFrames;
     SerializedProperty _enableAudioFrames;
     SerializedProperty _enableMetadataFrames;
-    SerializedProperty _onMetadataReceived;
+    SerializedProperty _onMetadataReceived; 
+    SerializedProperty _onVideoMetadataSent;
+    SerializedProperty _onAudioMetadataSent;
+    SerializedProperty _onMetadataSent;
 
     static class Styles
     {
@@ -33,7 +36,10 @@ sealed class NdiSenderEditor : UnityEditor.Editor
         _enableVideoFrames = finder["_enableVideoFrames"];
         _enableAudioFrames = finder["_enableAudioFrames"];
         _enableMetadataFrames = finder["_enableMetadataFrames"];
-        _onMetadataReceived = finder["_onMetaDataReceived"];
+        _onMetadataReceived = finder["_onMetadataReceived"];
+        _onVideoMetadataSent = finder["_onVideoMetadataSent"];
+        _onAudioMetadataSent = finder["_onAudioMetadataSent"];
+        _onMetadataSent = finder["_onMetadataSent"];
     }
 
     public override void OnInspectorGUI()
@@ -72,11 +78,18 @@ sealed class NdiSenderEditor : UnityEditor.Editor
 
         EditorGUI.indentLevel--;
 
+        EditorGUILayout.Space();
         EditorGUILayout.PropertyField(_enableVideoFrames);
         EditorGUILayout.PropertyField(_enableAudioFrames);
         EditorGUILayout.PropertyField(_enableMetadataFrames);
-      
+
+        EditorGUILayout.Space();
         EditorGUILayout.PropertyField(_onMetadataReceived, true);
+
+        EditorGUILayout.Space();
+        EditorGUILayout.PropertyField(_onVideoMetadataSent, true);
+        EditorGUILayout.PropertyField(_onAudioMetadataSent, true);
+        EditorGUILayout.PropertyField(_onMetadataSent, true);
 
         serializedObject.ApplyModifiedProperties();
 

@@ -116,7 +116,7 @@ public sealed partial class NdiSender : MonoBehaviour
         }
     }
 
-        #endregion
+    #endregion
 
     #region SRP camera capture callback
 
@@ -220,6 +220,11 @@ public sealed partial class NdiSender : MonoBehaviour
 
             // Send via NDI
             _send.SendVideoAsync(frame);
+
+            if(metadata != IntPtr.Zero)
+            {
+                _onVideoMetadataSent?.Invoke();
+            }
         }
     }
 
@@ -358,6 +363,7 @@ public sealed partial class NdiSender : MonoBehaviour
                 if(!string.IsNullOrEmpty(sendAudioFrameMetadata))
                 {
                     frame.Metadata = new DataEntry(sendAudioFrameMetadata);
+                    _onAudioMetadataSent?.Invoke();
                 }
 
                 if (_send != null && !_send.IsClosed)
@@ -397,6 +403,9 @@ public sealed partial class NdiSender : MonoBehaviour
             }
             Marshal.FreeHGlobal(metadataFrame.Data);
             sendMetadataFrameData = null;
+
+            // Dispatch metaData sent event
+            _onMetadataSent?.Invoke();
         }
     }
     #endregion
