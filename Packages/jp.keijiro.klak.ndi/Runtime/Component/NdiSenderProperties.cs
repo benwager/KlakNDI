@@ -72,8 +72,10 @@ public sealed partial class NdiSender : MonoBehaviour
     [SerializeField] UnityEvent<string> _onMetaDataReceived = null;
 
     public UnityEvent<string> onMetaDataReceived
-    { get => _onMetaDataReceived;
-      set => _onMetaDataReceived = value;
+    {
+        get => _onMetaDataReceived;
+        set => _onMetaDataReceived = value;
+    }
 
     [SerializeField] UnityEvent _onVideoMetadataSent = null;
 
