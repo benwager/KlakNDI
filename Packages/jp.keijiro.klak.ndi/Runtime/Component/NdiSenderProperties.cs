@@ -69,15 +69,15 @@ public sealed partial class NdiSender : MonoBehaviour
 
     #region metadata events
 
-    [SerializeField] UnityEvent<string> _onMetaDataReceived = null;
+    [SerializeField] UnityEvent<string> _onMetadataReceived = new UnityEvent<string>();
 
     public UnityEvent<string> onMetaDataReceived
     {
-        get => _onMetaDataReceived;
-        set => _onMetaDataReceived = value;
+        get => _onMetadataReceived;
+        set => _onMetadataReceived = value;
     }
 
-    [SerializeField] UnityEvent _onVideoMetadataSent = null;
+    [SerializeField] UnityEvent _onVideoMetadataSent = new UnityEvent();
 
     public UnityEvent onVideoMetadataSent
     {
@@ -85,7 +85,7 @@ public sealed partial class NdiSender : MonoBehaviour
         set => _onVideoMetadataSent = value;
     }
 
-    [SerializeField] UnityEvent _onAudioMetadataSent = null;
+    [SerializeField] UnityEvent _onAudioMetadataSent = new UnityEvent();
 
     public UnityEvent onAudioMetadataSent
     {
@@ -93,7 +93,7 @@ public sealed partial class NdiSender : MonoBehaviour
         set => _onAudioMetadataSent = value;
     }
 
-    [SerializeField] UnityEvent _onMetadataSent = null;
+    [SerializeField] UnityEvent _onMetadataSent = new UnityEvent();
 
     public UnityEvent onMetadataSent
     { 

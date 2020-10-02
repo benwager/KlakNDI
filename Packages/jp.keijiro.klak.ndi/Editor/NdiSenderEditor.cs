@@ -1,4 +1,3 @@
-using UnityEngine;
 using UnityEditor;
 
 namespace Klak.Ndi.Editor {
@@ -82,14 +81,17 @@ sealed class NdiSenderEditor : UnityEditor.Editor
         EditorGUILayout.PropertyField(_enableVideoFrames);
         EditorGUILayout.PropertyField(_enableAudioFrames);
         EditorGUILayout.PropertyField(_enableMetadataFrames);
-
         EditorGUILayout.Space();
-        EditorGUILayout.PropertyField(_onMetadataReceived, true);
 
-        EditorGUILayout.Space();
-        EditorGUILayout.PropertyField(_onVideoMetadataSent, true);
-        EditorGUILayout.PropertyField(_onAudioMetadataSent, true);
-        EditorGUILayout.PropertyField(_onMetadataSent, true);
+        if (_onMetadataReceived != null)
+        {
+            EditorGUILayout.PropertyField(_onMetadataReceived, true);
+            EditorGUILayout.Space();
+        }
+
+        if (_onVideoMetadataSent != null) EditorGUILayout.PropertyField(_onVideoMetadataSent, true);
+        if (_onAudioMetadataSent != null) EditorGUILayout.PropertyField(_onAudioMetadataSent, true);
+        if (_onMetadataSent != null) EditorGUILayout.PropertyField(_onMetadataSent, true);
 
         serializedObject.ApplyModifiedProperties();
 
