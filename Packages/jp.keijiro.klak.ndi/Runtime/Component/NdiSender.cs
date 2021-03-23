@@ -52,7 +52,7 @@ public sealed partial class NdiSender : MonoBehaviour
 
     void ReleaseInternalObjects()
     {
-        if (_send != null && _send != SharedInstance.GameViewSend)
+        if (_send != null && !SharedInstance.IsGameViewSend(_send))
             _send.Dispose();
         _send = null;
 
