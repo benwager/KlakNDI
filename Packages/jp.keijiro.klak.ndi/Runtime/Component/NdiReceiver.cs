@@ -44,6 +44,11 @@ public sealed partial class NdiReceiver : MonoBehaviour
     {
         lock (threadlock)
         {
+            videoFrameQueue.Clear();
+            audioBuffer.Clear();
+            metadataFrameQueue.Clear();
+            audioMetadataQueue.Clear();
+
             _recv?.Dispose();
             _recv = null;
         }
