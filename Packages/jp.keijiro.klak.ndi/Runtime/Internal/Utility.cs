@@ -1,3 +1,4 @@
+using Klak.Ndi.Interop;
 using System;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -10,6 +11,26 @@ namespace Klak.Ndi
 {
     static class Util
     {
+        public static Vector2 FrameRateND(FrameRate frameRate )
+        {
+            Debug.Log("ge nd value;");
+            switch (frameRate)
+            {
+                case FrameRate.NTSC_2398:
+                    return new Vector2(24000, 1001);
+                case FrameRate.NTSC_2997:
+                    return new Vector2(30000, 1001);
+                case FrameRate.NTSC_5994:
+                    return new Vector2(60000, 1001);
+                case FrameRate.PAL_25:
+                    return new Vector2(30000, 1200);
+                case FrameRate.PAL_50:
+                    return new Vector2(60000, 1200);
+                default:
+                    return new Vector2(60000, 1001);
+            }
+        }
+
         public static int FrameDataCount(int width, int height, bool alpha)
           => width * height * (alpha ? 3 : 2) / 4;
 

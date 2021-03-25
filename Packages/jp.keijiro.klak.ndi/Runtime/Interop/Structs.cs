@@ -34,6 +34,15 @@ public enum FrameFormat
     Field1
 }
 
+public enum FrameRate
+{
+    NTSC_5994,
+    NTSC_2997,
+    PAL_25,
+    PAL_50,
+    NTSC_2398
+}
+
 [StructLayoutAttribute(LayoutKind.Sequential)]
 public struct Source
 {
@@ -68,19 +77,24 @@ public struct Tally
     public bool OnPreview;
 }
 
-
-[StructLayoutAttribute(LayoutKind.Sequential)]
-public struct AudioFrame
-{
-    public int SampleRate;
-    public int NoChannels;
-    public int NoSamples;
-    public long Timecode;
-    public IntPtr Data;
-    public int ChannelStride;
-    public IntPtr Metadata;
-    public long Timestamp;
-}
+    // We use the same struct for Audio V2 and V3
+    // If making a V3 call..... 
+    // If the FourCC is not a compressed type and the audio format is planar,
+    // then this (ChannelStride) will be the stride in bytes for a single channel.
+    // If the FourCC is a compressed type, then this will be the size of the
+    // p_data buffer in bytes.
+    [StructLayoutAttribute(LayoutKind.Sequential)]
+    public struct AudioFrame
+    {
+        public int SampleRate;
+        public int NoChannels;
+        public int NoSamples;
+        public long Timecode;
+        public IntPtr Data;
+        public int ChannelStride;
+        public IntPtr Metadata;
+        public long Timestamp;
+    }
 
 [StructLayoutAttribute(LayoutKind.Sequential)]
 public struct AudioFrameInterleaved
