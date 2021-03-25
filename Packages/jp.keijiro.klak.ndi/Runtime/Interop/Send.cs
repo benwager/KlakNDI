@@ -36,7 +36,7 @@ public class Send : SafeHandleZeroOrMinusOneIsInvalid
       => _SetTally(this, out tally, timeout);
 
     public void SendAudio(in AudioFrame data)
-      => _SendAudio(this, data);
+      => _SendAudioV3(this, data);
 
     public void SendMetadata(in MetadataFrame data)
       => _SendMetadata(this, data);

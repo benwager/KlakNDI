@@ -23,6 +23,9 @@ public class Find : SafeHandleZeroOrMinusOneIsInvalid
     public static Find Create()
       => _Create(new Settings { ShowLocalSources = true });
 
+    public bool WaitForSources()
+        => _WaitForSources(this, 5000);
+
     unsafe public Span<Source> CurrentSources { get {
         uint count;
         var array = _GetCurrentSources(this, out count);
@@ -50,7 +53,10 @@ public class Find : SafeHandleZeroOrMinusOneIsInvalid
     [DllImport(Config.DllName, EntryPoint = "NDIlib_find_get_current_sources")]
     static extern IntPtr _GetCurrentSources(Find find, out uint count);
 
+    [DllImport(Config.DllName, EntryPoint = "NDIlib_find_wait_for_sources")]
+    static extern bool _WaitForSources(Find find, uint timeout);
+
     #endregion
-}
+    }
 
 }
