@@ -76,6 +76,9 @@ public class Send : SafeHandleZeroOrMinusOneIsInvalid
     [DllImport(Config.DllName, EntryPoint = "NDIlib_send_send_audio_v2")]
     static extern void _SendAudio(Send send, in AudioFrame data);
 
+    [DllImport(Config.DllName, EntryPoint = "NDIlib_send_send_audio_v3")]
+    static extern void _SendAudioV3(Send send, in AudioFrame data);
+        
     [DllImport(Config.DllName, EntryPoint = "NDIlib_send_send_metadata")]
     static extern void _SendMetadata(Send send, in MetadataFrame data);
 
