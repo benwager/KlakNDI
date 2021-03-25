@@ -21,6 +21,7 @@ static class SharedInstance
 
     static Interop.Find InitializeFind()
     {
+        Interop.NDILib.Initialize();
         _find = Interop.Find.Create();
         SetFinalizer();
         return _find;
@@ -30,6 +31,7 @@ static class SharedInstance
 
     static Interop.Send InitializeGameViewSend()
     {
+        Interop.NDILib.Initialize();
         _gameViewSend = Interop.Send.Create("Game View");
         SetFinalizer();
         return _gameViewSend;
@@ -62,15 +64,17 @@ static class SharedInstance
 
         _gameViewSend?.Dispose();
         _gameViewSend = null;
+
+        Interop.NDILib.Destroy();
     }
 
-    #else
+#else
 
     static void SetFinalizer() {}
 
-    #endif
+#endif
 
-    #endregion
-}
+        #endregion
+    }
 
 }
