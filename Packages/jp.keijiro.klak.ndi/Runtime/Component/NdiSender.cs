@@ -17,6 +17,8 @@ public sealed partial class NdiSender : MonoBehaviour
     MetadataQueue _metadataQueue = new MetadataQueue();
     System.Action<AsyncGPUReadbackRequest> _onReadback;
 
+    Vector2 frameRateND;
+
     // Audio
     int numSamples = 0;
     int numChannels = 0;
@@ -213,6 +215,8 @@ public sealed partial class NdiSender : MonoBehaviour
             // Frame data setup
             var frame = new Interop.VideoFrame
               { Width = _width, Height = _height, LineStride = _width * 2,
+                FrameRateN = (int)frameRateND.x,
+                FrameRateD = (int)frameRateND.y,
                 FourCC = _enableAlpha ?
                   Interop.FourCC.UYVA : Interop.FourCC.UYVY,
                 FrameFormat = Interop.FrameFormat.Progressive,
@@ -257,6 +261,8 @@ public sealed partial class NdiSender : MonoBehaviour
         }
 
         _attachedCamera = null;
+
+        frameRateND = Util.FrameRateND(_frameRate);
 
         // The following blocks are to activate the subcomponents.
         // We can return here if willBeActive is false.

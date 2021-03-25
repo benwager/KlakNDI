@@ -10,7 +10,8 @@ sealed class NdiSenderEditor : UnityEditor.Editor
     SerializedProperty _enableAlpha;
     SerializedProperty _captureMethod;
     SerializedProperty _sourceCamera;
-    SerializedProperty _sourceTexture; 
+    SerializedProperty _sourceTexture;
+    SerializedProperty _frameRate;
     SerializedProperty _enableVideoFrames;
     SerializedProperty _enableAudioFrames;
     SerializedProperty _enableMetadataFrames;
@@ -32,6 +33,7 @@ sealed class NdiSenderEditor : UnityEditor.Editor
         _captureMethod = finder["_captureMethod"];
         _sourceCamera = finder["_sourceCamera"];
         _sourceTexture = finder["_sourceTexture"];
+        _frameRate = finder["_frameRate"];
         _enableVideoFrames = finder["_enableVideoFrames"];
         _enableAudioFrames = finder["_enableAudioFrames"];
         _enableMetadataFrames = finder["_enableMetadataFrames"];
@@ -76,6 +78,12 @@ sealed class NdiSenderEditor : UnityEditor.Editor
             EditorGUILayout.PropertyField(_sourceTexture);
 
         EditorGUI.indentLevel--;
+
+        EditorGUILayout.Space();
+        EditorGUI.BeginChangeCheck();
+        EditorGUILayout.PropertyField(_frameRate);
+        reset = EditorGUI.EndChangeCheck();
+        EditorGUILayout.Space();
 
         EditorGUILayout.Space();
         EditorGUILayout.PropertyField(_enableVideoFrames);

@@ -1,3 +1,4 @@
+using Klak.Ndi.Interop;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -64,6 +65,12 @@ public sealed partial class NdiSender : MonoBehaviour
     public Texture sourceTexture
       { get => _sourceTexture;
         set => _sourceTexture = value; }
+
+    [SerializeField] FrameRate _frameRate = FrameRate.NTSC_5994;
+
+    public FrameRate frameRate
+      { get => _frameRate;
+        set { _frameRate = value; frameRateND = Util.FrameRateND(value); } }
 
     #endregion
 
