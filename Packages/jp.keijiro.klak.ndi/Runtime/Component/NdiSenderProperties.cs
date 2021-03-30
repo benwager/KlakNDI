@@ -67,6 +67,7 @@ public sealed partial class NdiSender : MonoBehaviour
         set => _sourceTexture = value; }
 
     [SerializeField] FrameRate _frameRate = FrameRate.NTSC_5994;
+    private Vector2 frameRateND;
 
     public FrameRate frameRate
       { get => _frameRate;

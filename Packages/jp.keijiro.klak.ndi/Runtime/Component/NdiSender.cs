@@ -17,8 +17,6 @@ public sealed partial class NdiSender : MonoBehaviour
     MetadataQueue _metadataQueue = new MetadataQueue();
     System.Action<AsyncGPUReadbackRequest> _onReadback;
 
-    Vector2 frameRateND;
-
     // Audio
     int numSamples = 0;
     int numChannels = 0;
