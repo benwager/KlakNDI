@@ -8,6 +8,8 @@ namespace Klak.Ndi.Editor {
 sealed class NdiReceiverEditor : UnityEditor.Editor
 {
     SerializedProperty _ndiName;
+    SerializedProperty _colorFormat;
+    SerializedProperty _bandwidth;
     SerializedProperty _targetTexture;
     SerializedProperty _targetRenderer;
     SerializedProperty _targetMaterialProperty;
@@ -64,6 +66,8 @@ sealed class NdiReceiverEditor : UnityEditor.Editor
     {
         var finder = new PropertyFinder(serializedObject);
         _ndiName = finder["_ndiName"];
+        _colorFormat = finder["_colorFormat"];
+        _bandwidth = finder["_bandwidth"];
         _targetTexture = finder["_targetTexture"];
         _targetRenderer = finder["_targetRenderer"];
         _targetMaterialProperty = finder["_targetMaterialProperty"]; 
@@ -80,10 +84,12 @@ sealed class NdiReceiverEditor : UnityEditor.Editor
 
         EditorGUILayout.BeginHorizontal();
 
+        var restart = false;
+
         // Source name text field
         EditorGUI.BeginChangeCheck();
         EditorGUILayout.DelayedTextField(_ndiName);
-        var restart = EditorGUI.EndChangeCheck();
+        restart = EditorGUI.EndChangeCheck();
 
         // Source name dropdown
         var rect = EditorGUILayout.GetControlRect(false, GUILayout.Width(60));
@@ -92,7 +98,18 @@ sealed class NdiReceiverEditor : UnityEditor.Editor
 
         EditorGUILayout.EndHorizontal();
 
+        // Color format / bandwith
+        EditorGUI.BeginChangeCheck();
+        EditorGUILayout.PropertyField(_colorFormat);
+        restart = restart || EditorGUI.EndChangeCheck();
+        
+        EditorGUI.BeginChangeCheck();
+        EditorGUILayout.PropertyField(_bandwidth);
+        restart = restart || EditorGUI.EndChangeCheck();
+
         // Target texture/renderer
+        EditorGUI.BeginChangeCheck();
+
         EditorGUILayout.PropertyField(_targetTexture);
         EditorGUILayout.PropertyField(_targetRenderer);
 

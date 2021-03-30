@@ -12,6 +12,18 @@ public sealed partial class NdiReceiver : MonoBehaviour
     public string ndiName
       { get => _ndiName;
         set { _ndiName = value; Restart(); } }
+        
+    [SerializeField] Interop.ColorFormat _colorFormat = Interop.ColorFormat.Fastest;
+
+    public Interop.ColorFormat colorFormat
+      { get => _colorFormat;
+        set => _colorFormat = value; }
+
+    [SerializeField] Interop.Bandwidth _bandwidth = Interop.Bandwidth.Highest;
+
+    public Interop.Bandwidth bandwidth
+      { get => _bandwidth;
+        set => _bandwidth = value; }
 
     #endregion
 
